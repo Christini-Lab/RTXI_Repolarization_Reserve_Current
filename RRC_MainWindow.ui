@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RRC_UI</class>
+ <widget class="QWidget" name="RRC_UI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>506</width>
+    <height>647</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="button_layout">
+     <item row="0" column="0">
+      <widget class="QPushButton" name="stimThreshold_button">
+       <property name="text">
+        <string>Stim Threshold</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="rrcThreshold_button">
+       <property name="text">
+        <string>RRC Threshold</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="pace_button">
+       <property name="text">
+        <string>Pace</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="rrcProtocol_button">
+       <property name="text">
+        <string>RRC Protocol</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="state_layout">
+     <item row="0" column="3">
+      <widget class="QLCDNumber" name="beatNumber_display">
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="segmentStyle">
+        <enum>QLCDNumber::Flat</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="voltage_label">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Voltage (mV):</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="apd_label">
+       <property name="text">
+        <string>APD (ms)</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="time_label">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Time (ms):</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="beatNumber_label">
+       <property name="text">
+        <string>Beat Number:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLCDNumber" name="time_display">
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="segmentStyle">
+        <enum>QLCDNumber::Flat</enum>
+       </property>
+       <property name="value" stdset="0">
+        <double>0.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLCDNumber" name="apd_display">
+       <property name="font">
+        <font>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="segmentStyle">
+        <enum>QLCDNumber::Flat</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLCDNumber" name="voltage_display">
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="segmentStyle">
+        <enum>QLCDNumber::Flat</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line_2">
+     <property name="lineWidth">
+      <number>2</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="settings_tabWidget">
+     <property name="tabShape">
+      <enum>QTabWidget::Rounded</enum>
+     </property>
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Stimulus</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="bcl_label">
+         <property name="text">
+          <string>Basic Cycle Length (ms):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="bcl_edit"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="stim_amplitude_label">
+         <property name="text">
+          <string>Amplitude (nA):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="stim_amplitude_edit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="stim_length_label">
+         <property name="text">
+          <string>Length (ms):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="stim_length_edit"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="ljp_label">
+         <property name="text">
+          <string>Liquid Junction Potential (mV):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="ljp_edit"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="cm_label">
+         <property name="text">
+          <string>Membrane Capacitance (pF):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="cm_edit"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_5">
+      <attribute name="title">
+       <string>RRC Threshold</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="thresh_startAmplitude_label">
+         <property name="text">
+          <string>Start Amplitude (nA):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="thresh_startAmplitude_edit"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="thresh_ampIncrement_label">
+         <property name="text">
+          <string>Amplitude Increment (nA):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="thresh_ampIncrement_edit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="thresh_beatNumber_label">
+         <property name="text">
+          <string>Beat Number:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="thresh_beatNumber_edit"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="thresh_apdCutoff_label">
+         <property name="text">
+          <string>APD Change Cutoff (%):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="thresh_apdCutoff_edit"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>RRC Protocol</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QLabel" name="rrc_thresholdTest_display_label">
+         <property name="text">
+          <string>Threshold Test Value (nA):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLCDNumber" name="rrc_thresholdTest_display">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>61</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="segmentStyle">
+          <enum>QLCDNumber::Flat</enum>
+         </property>
+         <property name="value" stdset="0">
+          <double>0.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="rrc_amplitude_label">
+         <property name="text">
+          <string>Amplitude (nA):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="rrc_amplitude_edit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="rrc_delay_label">
+         <property name="text">
+          <string>Delay (ms):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="rrc_delay_edit"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="rrc_length_label">
+         <property name="text">
+          <string>Length (ms):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="rrc_length_edit"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="rrc_thresholdWindow_label">
+         <property name="text">
+          <string>Threshold Window (%):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="rrc_thresholdWindow_edit"/>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="rrc_beatNumber_label">
+         <property name="text">
+          <string>Beat Number:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="rrc_beatNumber_edit"/>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="rrc_chance_label">
+         <property name="text">
+          <string>Chance (%):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="rrc_chance_edit"/>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="rrc_endBeatNumber_label">
+         <property name="text">
+          <string>Protocl End Beat:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QLineEdit" name="rrc_endBeatNumber_edit"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>APD</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QLabel" name="apd_repolPercent_label">
+         <property name="text">
+          <string>Repolarization %:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="apd_repolPercent_edit"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="apd_min_label">
+         <property name="text">
+          <string>Minimum APD (ms)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="apd_min_edit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="apd_stimWindow_label">
+         <property name="text">
+          <string>Stimulus Window (ms)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="apd_stimWindow_edit"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>Data Recording</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="rrcProtocol_dataCheck">
+         <property name="text">
+          <string>RRC Protocol</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="stimThreshold_dataCheck">
+         <property name="text">
+          <string>Stim Threshold</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QCheckBox" name="pace_dataCheck">
+         <property name="text">
+          <string>Pace</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="rrcThreshold_dataCheck">
+         <property name="text">
+          <string>RRC Threshold</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
