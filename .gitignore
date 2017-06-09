@@ -1,0 +1,6 @@
+RRC_MainWindow_UI.h
+moc_*
+.libs/
+*.o
+*.lo
+*.la
