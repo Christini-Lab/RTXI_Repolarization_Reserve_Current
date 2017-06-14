@@ -145,6 +145,9 @@ void RRC::Module::execute() {
       time += period;
       time_int += 1;
 
+      if (time_int == 0 && pace_recordData && !recording)
+        dataRecord_start();
+
       // If time is greater than BCL, advance the beat
       if (time_int - bcl_startTime >= bcl_int) {
         beatNumber++;
@@ -175,6 +178,9 @@ void RRC::Module::execute() {
     case STIMTHRESHOLD: // Stimulus threshold search
       time += period;
       time_int += 1;
+
+      if (time_int == 0 && stim_recordData && !recording)
+        dataRecord_start();
 
       // Apply stimulus for given number of ms (StimLength)
       if (time_int - bcl_startTime < stim_length_int) {
@@ -208,6 +214,9 @@ void RRC::Module::execute() {
             stim_amplitude = stim_stimulusLevel * 1.25;
             stim_onFlag = false;
             execute_mode = IDLE;
+
+            if (recording)
+              dataRecord_stop();
           }
           else { // If no action potential occurred, and Vm is back to rest
             // If the cell has rested for  200ms since returning to baseline
@@ -227,6 +236,9 @@ void RRC::Module::execute() {
     case RRCTHRESHOLD: // Reverse repolarization current threshold search
       time += period;
       time_int += 1;
+
+      if (time_int == 0 && thresh_recordData && !recording)
+        dataRecord_start();
 
       // If time is greater than BCL, advance the beat
       if (time_int - bcl_startTime >= bcl_int) {
@@ -251,6 +263,9 @@ void RRC::Module::execute() {
           execute_mode = IDLE;
           thresh_onFlag = false;
           output(0) = 0;
+
+          if (recording)
+            dataRecord_stop();
           break;
         }
 
@@ -297,13 +312,14 @@ void RRC::Module::execute() {
       time += period;
       time_int += 1;
 
+      if (time_int == 0 && rrcProtocol_recordData && !recording)
+        dataRecord_start();
+
       // If time is greater than BCL, advance the beat
       if (time_int - bcl_startTime >= bcl_int) {
         if (beatNumber >= rrc_endBeatNumber) { // End of protocol
-          if (recording == true) {
-            Event::Object event(Event::STOP_RECORDING_EVENT);
-            Event::Manager::getInstance()->postEventRT(&event);
-            recording = false;
+          if (recording) {
+            dataRecord_stop();
           }
 
           rrcProtocol_onFlag = false;
@@ -367,7 +383,7 @@ void RRC::Module::execute() {
 
 void RRC::Module::createGUI() {
   // Create subwindow and add it to main RTXI window
-  QMdiSubWindow *subWindow  = new QMdiSubWindow;
+  subWindow = new QMdiSubWindow(MainWindow::getInstance());
   subWindow->setAttribute(Qt::WA_DeleteOnClose);
   subWindow->setWindowIcon(QIcon("/usr/local/lib/rtxi/RTXI-widget-icon.png"));
   subWindow->setWindowFlags(Qt::CustomizeWindowHint |
@@ -467,6 +483,15 @@ void RRC::Module::createGUI() {
                    this, SLOT(modify()));
   QObject::connect(rrcUi.apd_stimWindow_edit, SIGNAL(returnPressed()),
                    this, SLOT(modify()));
+  // Data tab
+  QObject::connect(rrcUi.stimThreshold_dataCheck, SIGNAL(clicked()),
+                   this, SLOT(modify()));
+  QObject::connect(rrcUi.pace_dataCheck, SIGNAL(clicked()),
+                   this, SLOT(modify()));
+  QObject::connect(rrcUi.rrcThreshold_dataCheck, SIGNAL(clicked()),
+                   this, SLOT(modify()));
+  QObject::connect(rrcUi.rrcProtocol_dataCheck, SIGNAL(clicked()),
+                   this, SLOT(modify()));
   // Timer
   QObject::connect(timer, SIGNAL(timeout()),
                    this, SLOT(refreshDisplay()));
@@ -518,18 +543,18 @@ void RRC::Module::initialize() {
   Workspace::Instance::setData(Workspace::STATE, 3, &apd);
 
   // Workspace parameters
-  // Stimulus tab
+  //// Stimulus tab
   bcl = 1000;
   stim_amplitude = 4;
   stim_length = 1;
   ljp = 0;
   cm = 100;
-  // RRC threshold tab
+  //// RRC threshold tab
   thresh_startAmplitude = 0;
   thresh_ampIncrement = 0.01;
   thresh_beatNumber = 3;
   thresh_apdCutoff = 20;
-  // RRC protocol tab
+  //// RRC protocol tab
   rrc_amplitude = 0;
   rrc_delay = 5;
   rrc_length = 0;
@@ -537,25 +562,30 @@ void RRC::Module::initialize() {
   rrc_beatNumber = 3;
   rrc_chance = 50;
   rrc_endBeatNumber = 100;
-  // APD tab
+  //// APD tab
   apd_repolPercent = 90;
   apd_min = 50;
   apd_stimWindow = 4;
+  //// Data tab
+  pace_recordData = false;
+  stim_recordData = false;
+  thresh_recordData = false;
+  rrcProtocol_recordData = false;
 
   // Set user interface values
-  // Stimulus tab
+  //// Stimulus tab
   rrcUi.bcl_edit->setText(QString::number(bcl));
   rrcUi.stim_amplitude_edit->setText(QString::number(stim_amplitude));
   rrcUi.stim_length_edit->setText(QString::number(stim_length));
   rrcUi.ljp_edit->setText(QString::number(ljp));
   rrcUi.cm_edit->setText(QString::number(cm));
-  // RRC threshold tab
+  //// RRC threshold tab
   rrcUi.thresh_startAmplitude_edit->
       setText(QString::number(thresh_startAmplitude));
   rrcUi.thresh_ampIncrement_edit->setText(QString::number(thresh_ampIncrement));
   rrcUi.thresh_beatNumber_edit->setText(QString::number(thresh_beatNumber));
   rrcUi.thresh_apdCutoff_edit->setText(QString::number(thresh_apdCutoff));
-  // RRC protocol tab
+  //// RRC protocol tab
   rrcUi.rrc_amplitude_edit->setText(QString::number(rrc_amplitude));
   rrcUi.rrc_delay_edit->setText(QString::number(rrc_delay));
   rrcUi.rrc_length_edit->setText(QString::number(rrc_length));
@@ -563,10 +593,15 @@ void RRC::Module::initialize() {
   rrcUi.rrc_beatNumber_edit->setText(QString::number(rrc_beatNumber));
   rrcUi.rrc_chance_edit->setText(QString::number(rrc_chance));
   rrcUi.rrc_endBeatNumber_edit->setText(QString::number(rrc_endBeatNumber));
-  // APD tab
+  //// APD tab
   rrcUi.apd_repolPercent_edit->setText(QString::number(apd_repolPercent));
   rrcUi.apd_min_edit->setText(QString::number(apd_min));
   rrcUi.apd_stimWindow_edit->setText(QString::number(apd_stimWindow));
+  //// Data tab
+  rrcUi.stimThreshold_dataCheck->setChecked(stim_recordData);
+  rrcUi.pace_dataCheck->setChecked(pace_recordData);
+  rrcUi.rrcThreshold_dataCheck->setChecked(thresh_recordData);
+  rrcUi.rrcProtocol_dataCheck->setChecked(rrcProtocol_recordData);
 }
 
 // Slot Functions
@@ -592,6 +627,17 @@ void RRC::Module::refreshDisplay() {
       rrcUi.rrcProtocol_button->setChecked(false);
     }
   }
+  else if (execute_mode == RRCPROTOCOL) {
+    if (beatNumber_int % rrc_beatNumber == 0 &&
+        rrc_random_injection <= rrc_chance) {
+      if (rrc_random_threshold >= 50)
+        rrcUi.rrc_chance_display->display(1);
+      else
+        rrcUi.rrc_chance_display->display(-1);
+    }
+    else
+      rrcUi.rrc_chance_display->display(0);
+  }
 }
 
 void RRC::Module::modify() {
@@ -602,18 +648,18 @@ void RRC::Module::modify() {
   RT::System::getInstance()->postEvent(&event);
 
   // Get user interface values
-  // Stimulus tab
+  //// Stimulus tab
   bcl = rrcUi.bcl_edit->text().toDouble();
   stim_amplitude = rrcUi.stim_amplitude_edit->text().toDouble();
   stim_length = rrcUi.stim_length_edit->text().toDouble();
   ljp = rrcUi.ljp_edit->text().toDouble();
   cm = rrcUi.cm_edit->text().toDouble();
-  // RRC threshold tab
+  //// RRC threshold tab
   thresh_startAmplitude = rrcUi.thresh_startAmplitude_edit->text().toDouble();
   thresh_ampIncrement = rrcUi.thresh_ampIncrement_edit->text().toDouble();
   thresh_beatNumber = rrcUi.thresh_beatNumber_edit->text().toInt();
   thresh_apdCutoff = rrcUi.thresh_apdCutoff_edit->text().toInt();
-  // RRC protocol tab
+  //// RRC protocol tab
   rrc_amplitude = rrcUi.rrc_amplitude_edit->text().toDouble();
   rrc_delay = rrcUi.rrc_delay_edit->text().toDouble();
   rrc_length = rrcUi.rrc_length_edit->text().toInt();
@@ -621,10 +667,15 @@ void RRC::Module::modify() {
   rrc_beatNumber = rrcUi.rrc_beatNumber_edit->text().toInt();
   rrc_chance = rrcUi.rrc_chance_edit->text().toInt();
   rrc_endBeatNumber = rrcUi.rrc_endBeatNumber_edit->text().toInt();
-  // APD tab
+  //// APD tab
   apd_repolPercent = rrcUi.apd_repolPercent_edit->text().toInt();
   apd_min = rrcUi.apd_min_edit->text().toInt();
   apd_stimWindow = rrcUi.apd_stimWindow_edit->text().toInt();
+  //// Data tab
+  stim_recordData = rrcUi.stimThreshold_dataCheck->isChecked();
+  pace_recordData = rrcUi.pace_dataCheck->isChecked();
+  thresh_recordData = rrcUi.rrcThreshold_dataCheck->isChecked();
+  rrcProtocol_recordData = rrcUi.rrcProtocol_dataCheck->isChecked();
 
   // Set parameters to workspace
   setValue(0, bcl);
@@ -648,6 +699,19 @@ void RRC::Module::modify() {
   setValue(18, apd_stimWindow);
 
   setActive(active);
+}
+
+// Data recording functions
+void RRC::Module::dataRecord_start() {
+  Event::Object event(Event::START_RECORDING_EVENT);
+  Event::Manager::getInstance()->postEventRT(&event);
+  recording = true;
+}
+
+void RRC::Module::dataRecord_stop() {
+  Event::Object event(Event::STOP_RECORDING_EVENT);
+  Event::Manager::getInstance()->postEventRT(&event);
+  recording = false;
 }
 
 void RRC::Module::reset() {
@@ -850,7 +914,117 @@ void RRC::Module::receiveEventRT( const ::Event::Object *event ) {
 
 // Settings loading and saving
 void RRC::Module::doLoad(const Settings::Object::State &s) {
+  if (s.loadInteger("Maximized")) showMaximized();
+  else if (s.loadInteger("Minimized")) showMinimized();
+
+  if (s.loadInteger("W")) {
+    subWindow->resize(s.loadInteger("W"), s.loadInteger("H"));
+    parentWidget()->move(s.loadInteger("X"), s.loadInteger("Y"));
+  }
+
+  // Workspace parameters
+  //// Stimulus tab
+  bcl = s.loadDouble("bcl");
+  stim_amplitude = s.loadDouble("stim_amplitude");
+  stim_length = s.loadDouble("stim_length");
+  ljp = s.loadDouble("ljp");
+  cm = s.loadDouble("cm");
+  //// RRC threshold tab
+  thresh_startAmplitude = s.loadDouble("thresh_startAmplitude");
+  thresh_ampIncrement = s.loadDouble("thresh_ampIncrement");
+  thresh_beatNumber = s.loadInteger("thresh_beatNumber");
+  thresh_apdCutoff = s.loadInteger("thresh_apdCutoff");
+  //// RRC protocol tab
+  rrc_amplitude = s.loadDouble("rrc_amplitude");
+  rrc_delay = s.loadDouble("rrc_delay");
+  rrc_length = s.loadInteger("rrc_length");
+  rrc_thresholdWindow = s.loadInteger("rrc_thresholdWindow");
+  rrc_beatNumber = s.loadInteger("rrc_beatNumber");
+  rrc_chance = s.loadInteger("rrc_chance");
+  rrc_endBeatNumber = s.loadInteger("rrc_endBeatNumber");
+  //// APD tab
+  apd_repolPercent = s.loadInteger("apd_repolPercent");
+  apd_min = s.loadInteger("apd_min");
+  apd_stimWindow = s.loadInteger("apd_stimWindow");
+  //// Data tab
+  pace_recordData = s.loadInteger("pace_recordData");
+  stim_recordData = s.loadInteger("stim_recordData");
+  thresh_recordData = s.loadInteger("thresh_recordData");
+  rrcProtocol_recordData = s.loadInteger("rrcProtocol_recordData");
+
+  // Set user interface values
+  //// Stimulus tab
+  rrcUi.bcl_edit->setText(QString::number(bcl));
+  rrcUi.stim_amplitude_edit->setText(QString::number(stim_amplitude));
+  rrcUi.stim_length_edit->setText(QString::number(stim_length));
+  rrcUi.ljp_edit->setText(QString::number(ljp));
+  rrcUi.cm_edit->setText(QString::number(cm));
+  //// RRC threshold tab
+  rrcUi.thresh_startAmplitude_edit->
+      setText(QString::number(thresh_startAmplitude));
+  rrcUi.thresh_ampIncrement_edit->setText(QString::number(thresh_ampIncrement));
+  rrcUi.thresh_beatNumber_edit->setText(QString::number(thresh_beatNumber));
+  rrcUi.thresh_apdCutoff_edit->setText(QString::number(thresh_apdCutoff));
+  //// RRC protocol tab
+  rrcUi.rrc_amplitude_edit->setText(QString::number(rrc_amplitude));
+  rrcUi.rrc_delay_edit->setText(QString::number(rrc_delay));
+  rrcUi.rrc_length_edit->setText(QString::number(rrc_length));
+  rrcUi.rrc_thresholdWindow_edit->setText(QString::number(rrc_thresholdWindow));
+  rrcUi.rrc_beatNumber_edit->setText(QString::number(rrc_beatNumber));
+  rrcUi.rrc_chance_edit->setText(QString::number(rrc_chance));
+  rrcUi.rrc_endBeatNumber_edit->setText(QString::number(rrc_endBeatNumber));
+  //// APD tab
+  rrcUi.apd_repolPercent_edit->setText(QString::number(apd_repolPercent));
+  rrcUi.apd_min_edit->setText(QString::number(apd_min));
+  rrcUi.apd_stimWindow_edit->setText(QString::number(apd_stimWindow));
+  //// Data tab
+  rrcUi.stimThreshold_dataCheck->setChecked(stim_recordData);
+  rrcUi.pace_dataCheck->setChecked(pace_recordData);
+  rrcUi.rrcThreshold_dataCheck->setChecked(thresh_recordData);
+  rrcUi.rrcProtocol_dataCheck->setChecked(rrcProtocol_recordData);
 }
 
 void RRC::Module::doSave(Settings::Object::State &s) const {
+  // Window settings
+  if (subWindow->isMaximized())
+    s.saveInteger("Maximized", 1);
+  else if (subWindow->isMinimized())
+    s.saveInteger("Minimized", 1);
+
+  QPoint pos = subWindow->pos();
+  s.saveInteger("X", pos.x());
+  s.saveInteger("Y", pos.y());
+  s.saveInteger("W", subWindow->width());
+  s.saveInteger("H", subWindow->height());
+
+  // Parameters
+  //// Stimulus Tab
+  s.saveDouble("bcl", bcl);
+  s.saveDouble("stim_amplitude", stim_amplitude);
+  s.saveDouble("stim_length", stim_length);
+  s.saveDouble("ljp", ljp);
+  s.saveDouble("cm", cm);
+  //// RRC threshold tab
+  s.saveDouble("thresh_startAmplitude", thresh_startAmplitude);
+  s.saveDouble("thresh_ampIncrement", thresh_ampIncrement);
+  s.saveInteger("thresh_beatNumber", thresh_beatNumber);
+  s.saveInteger("thresh_apdCutoff", thresh_apdCutoff);
+  //// RRC protocol tab
+  s.saveDouble("rrc_amplitude", rrc_amplitude);
+  s.saveDouble("rrc_delay", rrc_delay);
+  s.saveInteger("rrc_length", rrc_length);
+  s.saveInteger("rrc_thresholdWindow", rrc_thresholdWindow);
+  s.saveInteger("rrc_beatNumber", rrc_beatNumber);
+  s.saveInteger("rrc_chance", rrc_chance);
+  s.saveInteger("rrc_endBeatNumber", rrc_endBeatNumber);
+  //// APD tab
+  s.saveInteger("apd_repolPercent", apd_repolPercent);
+  s.saveInteger("apd_min", apd_min);
+  s.saveInteger("apd_stimWindow", apd_stimWindow);
+  //// Data tab
+  s.saveInteger("stim_recordData", rrcUi.stimThreshold_dataCheck->isChecked());
+  s.saveInteger("pace_recordData", rrcUi.pace_dataCheck->isChecked());
+  s.saveInteger("thresh_recordData", rrcUi.rrcThreshold_dataCheck->isChecked());
+  s.saveInteger("rrcProtocol_recordData",
+                rrcUi.rrcProtocol_dataCheck->isChecked());
 }

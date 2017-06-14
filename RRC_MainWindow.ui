@@ -330,6 +330,25 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="2">
+        <widget class="QLCDNumber" name="rrc_chance_display">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>61</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="segmentStyle">
+          <enum>QLCDNumber::Flat</enum>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="rrc_amplitude_label">
          <property name="text">
@@ -337,7 +356,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="1" colspan="2">
         <widget class="QLineEdit" name="rrc_amplitude_edit"/>
        </item>
        <item row="2" column="0">
@@ -347,7 +366,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="2" column="1" colspan="2">
         <widget class="QLineEdit" name="rrc_delay_edit"/>
        </item>
        <item row="3" column="0">
@@ -357,7 +376,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="3" column="1" colspan="2">
         <widget class="QLineEdit" name="rrc_length_edit"/>
        </item>
        <item row="4" column="0">
@@ -367,7 +386,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="4" column="1" colspan="2">
         <widget class="QLineEdit" name="rrc_thresholdWindow_edit"/>
        </item>
        <item row="5" column="0">
@@ -377,7 +396,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="5" column="1" colspan="2">
         <widget class="QLineEdit" name="rrc_beatNumber_edit"/>
        </item>
        <item row="6" column="0">
@@ -387,7 +406,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
+       <item row="6" column="1" colspan="2">
         <widget class="QLineEdit" name="rrc_chance_edit"/>
        </item>
        <item row="7" column="0">
@@ -397,7 +416,7 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
+       <item row="7" column="1" colspan="2">
         <widget class="QLineEdit" name="rrc_endBeatNumber_edit"/>
        </item>
       </layout>
