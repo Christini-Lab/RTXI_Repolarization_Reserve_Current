@@ -1,4 +1,4 @@
-PLUGIN_NAME = reverse_repolarization_current
+PLUGIN_NAME = repolarization_reserve_current
 
 HEADERS = RRC.h \
 	RRC_MainWindow_UI.h

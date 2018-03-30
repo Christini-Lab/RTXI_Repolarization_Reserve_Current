@@ -65,7 +65,7 @@ class Module: public QWidget, public RT::Thread, public Plugin::Object,
   int thresh_beatNumber; // Number of beats before each RRC injection
   int thresh_apdCutoff; // APD change that denotes end of RRC threshold test
   //// RRC protocol tab
-  double rrc_amplitude; // Amplitude of reverse repolarization current (nA)
+  double rrc_amplitude; // Amplitude of repolarization reserve current (nA)
   double rrc_delay; // Delay before the start of RRC injection (ms)
   int rrc_length; // Length of RRC, where 0 indicates until next stimulus
   int rrc_thresholdWindow; // Change in amplitude for sub- and supra-threshold

@@ -112,12 +112,12 @@ static size_t num_vars = sizeof(vars) / sizeof(Workspace::variable_t);
 
 RRC::Module::Module() :
     QWidget(MainWindow::getInstance()->centralWidget()),RT::Thread(0),
-    Workspace::Instance("Reverse Repolarization Current Module",
+    Workspace::Instance("Repolarization Reserve Current Module",
                         vars, num_vars) {
 
   // Build module GUI
   setWindowTitle(QString::number(getID()) +
-                 " Reverse Repolarization Current Module");
+                 " Repolarization Reserve Current Module");
   createGUI();
 
   // Initialize parameters, initialize states, reset model, and update rate
@@ -233,7 +233,7 @@ void RRC::Module::execute() {
       }
       break;
 
-    case RRCTHRESHOLD: // Reverse repolarization current threshold search
+    case RRCTHRESHOLD: // repolarization reserve current threshold search
       time += period;
       time_int += 1;
 
@@ -308,7 +308,7 @@ void RRC::Module::execute() {
       calculateAPD(2); // Second step of APD calculation
       break;
 
-    case RRCPROTOCOL: // Random reverse repolarization current injection
+    case RRCPROTOCOL: // Random repolarization reserve current injection
       time += period;
       time_int += 1;
 
